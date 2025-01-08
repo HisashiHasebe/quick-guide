@@ -71,7 +71,7 @@ const News = () => {
   return (
     <Stack spacing={2}>
       <Typography variant="h5" component="h1">
-        News
+        Newstest
       </Typography>
 
       <Box>
