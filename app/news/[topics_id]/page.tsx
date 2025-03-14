@@ -39,7 +39,7 @@ export default function NewsDetailPage(props: { params: Promise<{ topics_id: str
         }
         const data: NewsDetailResponse = await res.json();
         setDetail(data.details);
-      } catch (err) {
+      } catch {
         setError("通信エラーが発生しました。");
       } finally {
         setIsLoading(false);
@@ -92,4 +92,4 @@ export default function NewsDetailPage(props: { params: Promise<{ topics_id: str
       </Card>
     </Container>
   );
-} 
+}    

@@ -62,7 +62,7 @@ const News = () => {
     return null;
   }
 
-  const handlePageChange = (_: any, page: number) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set('page', String(page));
     router.push(`/news?${newParams.toString()}`);
