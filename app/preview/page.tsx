@@ -6,7 +6,13 @@ import React, { useEffect, useState } from 'react';
 
 const PreviewPage = () => {
   const searchParams = useSearchParams();
-  const [topic, setTopic] = useState<any>();
+  
+  type Topic = {
+    subject: string;
+    contents: string;
+  };
+  
+  const [topic, setTopic] = useState<Topic | null>(null);
 
   useEffect(() => {
     const token = searchParams.get('preview_token');
