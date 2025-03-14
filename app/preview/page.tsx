@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
@@ -87,6 +87,4 @@ const PreviewPage = () => {
       </Card>
     </Container>
   );
-};
-
-export default PreviewPage;
+}
