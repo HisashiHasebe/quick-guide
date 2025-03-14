@@ -1,22 +1,32 @@
 'use client';
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Container, Typography, Card, CardContent } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+
+// Define the API response type
+type PreviewResponse = {
+  details: {
+    subject: string;
+    contents: string;
+    // Add other fields that might be in the response
+  };
+  errors?: Array<{ message: string }>;
+};
 
 const PreviewPage = () => {
   const searchParams = useSearchParams();
   
-  type Topic = {
-    subject: string;
-    contents: string;
-  };
-  
-  const [topic, setTopic] = useState<Topic | null>(null);
+  const [topic, setTopic] = useState<PreviewResponse['details'] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = searchParams.get('preview_token');
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     fetch(
       process.env.NEXT_PUBLIC_BASE_URL +
@@ -28,39 +38,54 @@ const PreviewPage = () => {
       }
     )
       .then((response) => response.json())
-      .then((data) => {
+      .then((data: PreviewResponse) => {
         if (data.errors && data.errors.length) {
+          setError(data.errors[0].message);
           return;
         }
         setTopic(data.details);
+      })
+      .catch(() => {
+        setError("通信エラーが発生しました。");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [searchParams]);
 
+  if (isLoading) {
+    return <p>読み込み中です...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
   if (!topic) {
-    return null;
+    return <p>データが見つかりませんでした。</p>;
   }
 
   return (
-    <Stack spacing={2}>
-      <Box
-        sx={{
-          background: '#333',
-          color: 'white',
-          p: 2,
-          borderRadius: '8px',
-        }}
-      >
-        Preview
-      </Box>
-      <Typography variant="h5" component="h1">
-        {topic.subject}
-      </Typography>
-      <Typography
-        dangerouslySetInnerHTML={{
-          __html: topic.contents,
-        }}
-      />
-    </Stack>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h5" component="h1" gutterBottom>
+            プレビュー画面サンプル
+          </Typography>
+          <Typography variant="body1" paragraph>
+            タイトル: {topic.subject}
+          </Typography>
+          <Typography variant="body1" paragraph>
+            内容: 
+            <span
+              dangerouslySetInnerHTML={{
+                __html: topic.contents,
+              }}
+            />
+          </Typography>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 
