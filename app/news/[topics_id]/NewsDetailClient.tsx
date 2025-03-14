@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Card, CardContent, CardMedia } from '@mui/material';
+import useRequireAuth from '../../lib/use-require-auth';
 
 type NewsDetailResponse = {
   details: {
@@ -18,11 +19,16 @@ type NewsDetailResponse = {
 };
 
 export default function NewsDetailClient({ topicsId }: { topicsId: string }) {
+  const isLoggedIn = useRequireAuth();
   const [detail, setDetail] = useState<NewsDetailResponse["details"] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return;
+    }
+    
     async function fetchData() {
       try {
         const res = await fetch(
@@ -45,7 +51,11 @@ export default function NewsDetailClient({ topicsId }: { topicsId: string }) {
       }
     }
     fetchData();
-  }, [topicsId]);
+  }, [topicsId, isLoggedIn]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   if (isLoading) {
     return <p>読み込み中です...</p>;
