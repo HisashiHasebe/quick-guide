@@ -17,10 +17,6 @@ export type RegistFormData = {
   login_pwd: string;
 };
 
-type ErrorResponse = {
-  message: string;
-};
-
 type ContextTYpe = {
   isLoggedIn?: boolean;
   regist: (data: RegistFormData) => void;
@@ -56,7 +52,7 @@ export const AuthProvider: FC<{
       .then((response) => response.json())
       .then((res) => {
         if (res.errors && res.errors.length) {
-          res.errors.map((error: ErrorResponse) => alert(error.message));
+          res.errors.map((error: any) => alert(error.message));
         } else {
           router.push('/signin');
         }
@@ -90,7 +86,7 @@ export const AuthProvider: FC<{
       })
       .then((res) => {
         if (res.status !== 0 && res.errors) {
-          res.errors.map((error: ErrorResponse) => alert(error.message));
+          res.errors.map((error: any) => alert(error.message));
         } else {
           setTimeout(() => {
             router.push('/news');

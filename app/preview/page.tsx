@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import PreviewClient from './PreviewClient';
 
-// Server component that wraps the client component in a Suspense boundary
+// サーバーコンポーネントがクライアントコンポーネントをSuspenseでラップ
 export default function PreviewPage() {
   return (
     <Suspense fallback={<p>読み込み中です...</p>}>

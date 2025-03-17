@@ -31,6 +31,8 @@ export default function NewsClient() {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<Topic[]>();
   const [pageCount, setPageCount] = useState<number>();
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -51,15 +53,30 @@ export default function NewsClient() {
       .then((response) => response.json())
       .then((data) => {
         if (data.errors && data.errors.length) {
+          setError(data.errors[0].message);
           return;
         }
         setItems(data.list);
         setPageCount(data.pageInfo.totalPageCnt);
+      })
+      .catch(() => {
+        setError("通信エラーが発生しました。");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [isLoggedIn, searchParams]);
 
   if (!isLoggedIn) {
     return null;
+  }
+
+  if (isLoading) {
+    return <p>読み込み中です...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
   }
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {

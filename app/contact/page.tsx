@@ -16,42 +16,24 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Control, Controller, useForm, UseFormRegister } from 'react-hook-form';
+import { Controller, useForm, UseFormRegister } from 'react-hook-form';
 import useRequireAuth from '../lib/use-require-auth';
-
-type FormOption = {
-  key: string;
-  value: string;
-  default?: boolean;
-};
-
-type FormField = {
-  type: number;
-  title: string;
-  required?: number;
-  contents?: FormOption[];
-  order_no?: number;
-};
 
 type Form = {
   cols: {
-    [key: string]: FormField;
+    [key: string]: any;
   };
 };
 
 type FormData = {
-  [key: string]: string | string[];
-};
-
-type ErrorResponse = {
-  message: string;
+  [key: string]: any;
 };
 
 const getField = (
   register: UseFormRegister<FormData>,
   name: string,
-  field: FormField,
-  control: Control<FormData>
+  field: any,
+  control: any
 ) => {
   switch (field.type) {
     case 1:
@@ -75,7 +57,7 @@ const getField = (
           variant="outlined"
         >
           {field.type === 4 &&
-            field.contents?.map((option: FormOption) => (
+            field.contents?.map((option: any) => (
               <MenuItem value={option.key} key={option.key}>
                 {option.value || '-'}
               </MenuItem>
@@ -87,7 +69,7 @@ const getField = (
         <FormControl>
           <FormLabel>{field.title}</FormLabel>
           <RadioGroup>
-            {field.contents?.map((option: FormOption) => (
+            {field.contents.map((option: any) => (
               <FormControlLabel
                 key={option.key}
                 control={<Radio {...register(name)} />}
@@ -107,15 +89,15 @@ const getField = (
             <Controller
               name={name}
               control={control}
-              defaultValue={field.contents?.filter((o: FormOption) => o.default).map(o => o.key) || []}
+              defaultValue={field.contents.filter((o: any) => o.default)}
               render={({ field: rfField }) => (
                 <>
-                  {field.contents?.map((option: FormOption) => (
+                  {field.contents.map((option: any) => (
                     <FormControlLabel
                       key={option.key}
                       control={
                         <Checkbox
-                          checked={Array.isArray(rfField.value) && rfField.value.some(
+                          checked={rfField.value.some(
                             (f: string) => f === option.key
                           )}
                         />
@@ -125,9 +107,9 @@ const getField = (
                           rfField.onChange([...rfField.value, option.key]);
                         } else {
                           rfField.onChange(
-                            Array.isArray(rfField.value) ? rfField.value.filter(
+                            rfField.value.filter(
                               (value: string) => value !== option.key
-                            ) : []
+                            )
                           );
                         }
                       }}
@@ -180,7 +162,7 @@ const Contact = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.errors && res.errors.length) {
-          res.errors.map((e: ErrorResponse) => alert(e.message));
+          res.errors.map((e: any) => alert(e.message));
         } else {
           alert('success');
         }
@@ -205,7 +187,7 @@ const Contact = () => {
       <form onSubmit={handleSubmit(submit)}>
         <Stack spacing={2}>
           {Object.entries(form.cols)
-            .sort((a, b) => (b[1].order_no || 0) - (a[1].order_no || 0))
+            .sort((a, b) => b[1].order_no - a[1].order_no)
             .map(([name, field]) => (
               <Box key={name}>{getField(register, name, field, control)}</Box>
             ))}

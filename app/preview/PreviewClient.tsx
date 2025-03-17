@@ -1,16 +1,16 @@
 "use client";
 
-import { Container, Typography, Card, CardContent } from '@mui/material';
+import { Container, Typography, Card, CardContent, Box, Stack } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import useRequireAuth from '../lib/use-require-auth';
 
-// Define the API response type
+// APIレスポンスの型を定義
 type PreviewResponse = {
   details: {
     subject: string;
     contents: string;
-    // Add other fields that might be in the response
+    // レスポンスに含まれる可能性のある他のフィールドを追加
   };
   errors?: Array<{ message: string }>;
 };
@@ -79,14 +79,21 @@ export default function PreviewClient() {
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Card>
         <CardContent>
-          <Typography variant="h5" component="h1" gutterBottom>
+          <Box
+            sx={{
+              background: '#333',
+              color: 'white',
+              p: 2,
+              borderRadius: '8px',
+              mb: 2
+            }}
+          >
             プレビュー画面サンプル
+          </Box>
+          <Typography variant="h5" component="h1" gutterBottom>
+            {topic.subject}
           </Typography>
-          <Typography variant="body1" paragraph>
-            タイトル: {topic.subject}
-          </Typography>
-          <Typography variant="body1" paragraph>
-            内容: 
+          <Typography variant="body1">
             <span
               dangerouslySetInnerHTML={{
                 __html: topic.contents,

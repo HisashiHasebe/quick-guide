@@ -1,18 +1,11 @@
-import { use } from 'react';
+import React, { Suspense } from 'react';
 import NewsDetailClient from './NewsDetailClient';
 
-// This function is required for static site generation with dynamic routes
-export async function generateStaticParams() {
-  // Return a list of possible values for topics_id
-  return [
-    { topics_id: '1' },
-    { topics_id: '2' },
-    { topics_id: '3' },
-    // Add more IDs as needed for pre-rendering
-  ];
+// サーバーコンポーネントがクライアントコンポーネントをSuspenseでラップ
+export default function NewsDetailPage({ params }: { params: { topics_id: string } }) {
+  return (
+    <Suspense fallback={<p>読み込み中です...</p>}>
+      <NewsDetailClient topicsId={params.topics_id} />
+    </Suspense>
+  );
 }
-
-export default function NewsDetailPage(props: { params: Promise<{ topics_id: string }> }) {
-  const params = use(props.params);
-  return <NewsDetailClient topicsId={params.topics_id} />;
-}     
