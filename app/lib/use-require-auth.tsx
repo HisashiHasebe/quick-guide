@@ -10,9 +10,9 @@ const useRequireAuth = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    // 静的エクスポートのためのより積極的なリダイレクト
+    // More aggressive redirect for static exports
     if (isLoggedIn === false) {
-      // 即時リダイレクト
+      // Immediate redirect
       router.push('/signin');
     }
   }, [isLoggedIn, router, pathname]);

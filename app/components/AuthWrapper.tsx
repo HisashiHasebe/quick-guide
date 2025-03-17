@@ -4,7 +4,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '../context/auth';
 
-// 認証が必要なルートを定義
+// Define protected routes that require authentication
 const PROTECTED_ROUTES = ['/news', '/contact'];
 
 export default function AuthWrapper({ children }: { children: ReactNode }) {
@@ -14,12 +14,12 @@ export default function AuthWrapper({ children }: { children: ReactNode }) {
   const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
-    // 現在のパスが保護されたルートかどうかをチェック
+    // Check if the current path is a protected route or starts with a protected route prefix
     const isProtectedRoute = PROTECTED_ROUTES.some(route => 
       pathname === route || pathname.startsWith(`${route}/`)
     );
 
-    // ログインしていない状態で保護されたルートにアクセスした場合、サインインページにリダイレクト
+    // If not logged in and on a protected route, redirect to signin
     if (isLoggedIn === false && isProtectedRoute) {
       router.push('/signin');
     }
@@ -27,13 +27,13 @@ export default function AuthWrapper({ children }: { children: ReactNode }) {
     setIsAuthChecked(true);
   }, [isLoggedIn, pathname, router]);
 
-  // 認証チェックが完了するまで子コンポーネントをレンダリングしない
-  // これにより、リダイレクト前に保護されたコンテンツが一瞬表示されるのを防ぐ
+  // Don't render children until auth check is complete
+  // This prevents flash of protected content before redirect
   if (!isAuthChecked) {
     return null;
   }
 
-  // 保護されたルートの場合、ログインしている場合のみ子コンポーネントをレンダリング
+  // For protected routes, only render children if logged in
   const isProtectedRoute = PROTECTED_ROUTES.some(route => 
     pathname === route || pathname.startsWith(`${route}/`)
   );
