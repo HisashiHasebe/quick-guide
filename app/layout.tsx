@@ -2,6 +2,7 @@
 
 import './globals.css';
 import { AuthProvider } from './context/auth';
+import AuthWrapper from './components/AuthWrapper';
 import { ReactNode } from 'react';
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <AuthProvider>
-          {children}
+          <AuthWrapper>
+            {children}
+          </AuthWrapper>
         </AuthProvider>
       </body>
     </html>

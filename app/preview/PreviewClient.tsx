@@ -3,6 +3,7 @@
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import useRequireAuth from '../lib/use-require-auth';
 
 // Define the API response type
 type PreviewResponse = {
@@ -15,6 +16,7 @@ type PreviewResponse = {
 };
 
 export default function PreviewClient() {
+  const isLoggedIn = useRequireAuth();
   const searchParams = useSearchParams();
   
   const [topic, setTopic] = useState<PreviewResponse['details'] | null>(null);
@@ -22,6 +24,10 @@ export default function PreviewClient() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return;
+    }
+    
     const token = searchParams.get('preview_token');
     if (!token) {
       setIsLoading(false);
@@ -51,7 +57,11 @@ export default function PreviewClient() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [searchParams]);
+  }, [searchParams, isLoggedIn]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   if (isLoading) {
     return <p>読み込み中です...</p>;
