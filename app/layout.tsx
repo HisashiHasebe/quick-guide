@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from './context/auth';
 import AuthWrapper from './components/AuthWrapper';
 import { ReactNode } from 'react';
+import ClientRouting from './components/ClientRouting';
 
 export default function RootLayout({
   children,
@@ -17,6 +18,7 @@ export default function RootLayout({
           <AuthWrapper>
             {children}
           </AuthWrapper>
+          <ClientRouting />
         </AuthProvider>
       </body>
     </html>
